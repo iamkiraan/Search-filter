@@ -13,4 +13,8 @@ class ViewModel : ViewModel(){
         _listsofData.add(value)
     }
 
+    fun filterData(query : String):List<String>{
+        return _listsofData.filter { it.contains(query, ignoreCase = true) }
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.searchfilter
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,8 +39,9 @@ fun SearchAndFilter(viewModel: ViewModel = viewModel()){
 
     var texts  by remember { mutableStateOf("") }
     var dialogBox by remember { mutableStateOf(false) }
-
-    var items = viewModel.listofData
+//
+//    var items = viewModel.listofData
+    var filteredItems = viewModel.filterData(texts)
 
     Scaffold(
         topBar = {
@@ -72,11 +74,15 @@ fun SearchAndFilter(viewModel: ViewModel = viewModel()){
         Column() {
             SearchBar(
                 query = texts,
-                onQueryChange = {},
-                onSearch = {},
+                onQueryChange = {texts = it},
+                onSearch = {
+                    filteredItems = viewModel.filterData(texts)
+                },
                 active = false,
                 onActiveChange = {},
-                modifier = Modifier.padding(innerPadding),
+
+                modifier = Modifier.padding(innerPadding)
+                   ,
                 leadingIcon = {
                     Icon(
                         Icons.Default.Search,
@@ -85,16 +91,11 @@ fun SearchAndFilter(viewModel: ViewModel = viewModel()){
                 }
 
             ){}
-            Column(modifier = Modifier.padding(10.dp)){
-                items.forEach { values ->
-                Text(text = values)}
-
-
-
-
+            if(filteredItems.isNotEmpty()){
+                ShowData(filteredItems)
             }
-        }
 
+        }
     }
     if(dialogBox){
         DialogBox(
@@ -149,3 +150,17 @@ fun DialogBox(onDismiss: () -> Unit,onConfirm: (String)->Unit){
 
 
 }
+
+@Composable
+fun ShowData(values : List<String>){
+
+    Column(modifier = Modifier.padding(10.dp)){
+        values.forEach { data->
+            Text(text = data)
+        }
+
+
+    }
+
+}
+
