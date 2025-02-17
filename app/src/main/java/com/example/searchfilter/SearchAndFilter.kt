@@ -2,9 +2,11 @@ package com.example.searchfilter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
@@ -27,14 +29,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun SearchAndFilter(){
+fun SearchAndFilter(viewModel: ViewModel = viewModel()){
 
-    var text  by remember { mutableStateOf("") }
+    var texts  by remember { mutableStateOf("") }
     var dialogBox by remember { mutableStateOf(false) }
+
+    var items = viewModel.listofData
 
     Scaffold(
         topBar = {
@@ -64,28 +69,38 @@ fun SearchAndFilter(){
         }
     )
     { innerPadding ->
-        SearchBar(
-            query = text,
-            onQueryChange = {},
-            onSearch = {},
-            active = false,
-            onActiveChange = {},
-            modifier = Modifier.padding(innerPadding),
-            leadingIcon = {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = ""
-                )
+        Column() {
+            SearchBar(
+                query = texts,
+                onQueryChange = {},
+                onSearch = {},
+                active = false,
+                onActiveChange = {},
+                modifier = Modifier.padding(innerPadding),
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = ""
+                    )
+                }
+
+            ){}
+            Column(modifier = Modifier.padding(10.dp)){
+                items.forEach { values ->
+                Text(text = values)}
+
+
+
+
             }
-
-        ) { }
-
+        }
 
     }
     if(dialogBox){
         DialogBox(
             onDismiss = {dialogBox = false},
             onConfirm = {newItem ->
+                viewModel.addata(newItem)
                 dialogBox = false
 
             }
